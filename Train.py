@@ -1,18 +1,18 @@
 import tensorflow as tf
-import tensorflow.keras
+from tensorflow import keras
 import os
 import matplotlib.pyplot as plt
 from PIL import Image
 import numpy as np
-from tensorflow.keras import backend as K
+from keras import backend as K
    
-from tensorflow.keras.applications.vgg16 import preprocess_input
-from tensorflow.keras.preprocessing.image import load_img
-from tensorflow.keras.models import load_model
+from keras.applications.vgg16 import preprocess_input
+#from keras.preprocessing.image import load_img
+from keras.models import load_model
 
-from tensorflow.keras import preprocessing
-from tensorflow.keras import backend as K
-from tensorflow.keras import models
+from keras import preprocessing
+from keras import backend as K
+from keras import models
 
 from config1 import *
 from model import ProposedModel,getAssembledModel
