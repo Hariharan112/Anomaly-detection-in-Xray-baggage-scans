@@ -32,5 +32,5 @@ i_i = []
 i_j =[]
 
 doTraining =True
-act_size = 1000
-p = 100
+act_size = 1040
+p = 104

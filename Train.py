@@ -6,9 +6,9 @@ from PIL import Image
 import numpy as np
 from keras import backend as K
    
-from keras.applications.vgg16 import preprocess_input
+#from keras.applications.vgg16 import preprocess_input
 #from keras.preprocessing.image import load_img
-from keras.models import load_model
+#from keras.models import load_model
 
 from keras import preprocessing
 from keras import backend as K
@@ -36,7 +36,7 @@ def getPatches(folder, isTraining, p):
     mean = 0
     var =10
     sigma = var ** 0.5
-    act_size = 1000
+    act_size = 1040
     gaussian = np.random.normal(mean, sigma,(act_size,act_size))
 
     doChunking = True
@@ -50,11 +50,11 @@ def getPatches(folder, isTraining, p):
             print(str(i2) + "chunking testing image" + filename)
         
         image = Image.open(folder+filename)
-        image = image.resize((1000,1000))
+        image = image.resize((1040,1040))
         data = np.array(image)
 
+        #add gaussian noise
         if isTraining == True:
-            #add gaussian noise
             if len(data.shape) == 2:
                 data = data + gaussian
             else:
