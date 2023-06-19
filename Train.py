@@ -39,7 +39,7 @@ def getPatches(folder, isTraining, p):
     act_size = 1040
     gaussian = np.random.normal(mean, sigma,(act_size,act_size))
 
-    doChunking = True
+    doChunking = False
 
     index = 0
     i2 = 1
@@ -83,9 +83,14 @@ def getPatches(folder, isTraining, p):
 
     return i_i,i_j, patches
 
-#Do def transfer weights
-
 autoencoder = getAssembledModel(p)
+
+def transferWeights(model1, model2):    
+    for i in range(1,len(model1.layers)):
+        model2.layers[i].set_weights(model1.layers[i].get_weights())
+    
+    return model2
+
 
 #ONE TIME TRAINING
 if doTraining == True:
@@ -101,3 +106,42 @@ if doTraining == True:
                     shuffle=True,
                     validation_data=(x_valid, x_valid))
     autoencoder.save("model.tf")
+else:
+    model1 = tf.keras.models.load_model("model.tf", compile=False)
+    transferWeights(model1, autoencoder)
+
+#Testing our images
+i_i,i_j, x_test = getPatches(te_folder,False,p)
+print(x_test.shape)
+print("**********************Reconstructing Patches*******************")
+
+decoded_imgs = []
+import cv2 as cv
+
+l1,r1,c1,ch1 = x_test.shape
+img = np.zeros((act_size,act_size,3), dtype='float32')
+for i in range(l1):
+    decoded_imgs.append(autoencoder.predict(x_test[i].reshape(1,p,p,3)))
+
+decoded_imgs = np.array(decoded_imgs)
+
+print("**********************Stitching Images*******************")
+
+for k in range(len(i_i)):
+    patch = decoded_imgs[k].reshape(p, p, 3)
+    cv.imwrite("datasets/"+ str(i_i) + str(i_j)+"patch.jpg",patch)
+    i = i_i[k]
+    j = i_j[k]
+    img[(i)*p:(i+1)*p,(j)*p:(j+1)*p,:] = patch
+
+def comp_disparity(input,decoded):
+    diff = input - decoded
+    return diff
+inp1 = Image.open("datasets/sixray/abnormal/P00001.jpg")
+inp2 = Image.open("datasets/sixray/abnormal/P00048.jpg")
+inp1 = inp1.resize((1040,1040))
+inp2 = inp2.resize((1040,1040))
+
+tet = comp_disparity(inp1,img)
+tet1 = comp_disparity(inp2,img)
+

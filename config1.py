@@ -31,6 +31,6 @@ x_valid =[]
 i_i = []
 i_j =[]
 
-doTraining =True
+doTraining =False
 act_size = 1040
 p = 104
